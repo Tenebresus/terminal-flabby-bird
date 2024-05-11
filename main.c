@@ -32,13 +32,16 @@ int main() {
     srand(time(NULL));
 
     int pipeGap = 12;
-    int pipeLengthRange = y - pipeGap;
-    int upperPipeLength = rand() % (pipeLengthRange - 20);
+    int pipeLengthRange = y - 8;
+
+    int upperPipeLength = rand() % (pipeLengthRange);
     int lowerPipeLength = pipeLengthRange - upperPipeLength;
 
     int pipePosition = x - pipeGap;
 
-    while (1) {
+    int gameOver = 0;
+
+    while (!gameOver) {
 
         fd_set rfds;
         struct timeval tv;
@@ -73,10 +76,16 @@ int main() {
             pipePosition -= 2;
         }
 
-        if (pipePosition < 0) {
+        if (pipePosition <= 0) {
             pipePosition = x - pipeGap;
             upperPipeLength = rand() % (pipeLengthRange - 20);
             lowerPipeLength = pipeLengthRange - upperPipeLength;
+        }
+
+        int birdY = initCursorPosition + fallingPosition;
+
+        if ((pipePosition >= 18 && pipePosition <= 18 + pipeGap) && (birdY <= upperPipeLength || y - birdY <= lowerPipeLength)) {
+            gameOver = 1;
         }
 
         gravity(initCursorPosition, fallingPosition);
